@@ -1,24 +1,19 @@
-import logo from './logo.svg';
-import './App.css';
+import Layout from "./Pages/Layout";
+import { UserProvider } from "./Context/UserContext";
+import { ToggleLoadingProvider } from "./Context/ToggleLoadingContext";
+import { DataProvider } from "./Context/DataContext";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <ToggleLoadingProvider>
+        <UserProvider>
+          <DataProvider>
+            <Layout />
+          </DataProvider>
+        </UserProvider>
+      </ToggleLoadingProvider>
+    </>
   );
 }
 
