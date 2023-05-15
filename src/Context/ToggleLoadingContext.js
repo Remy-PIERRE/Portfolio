@@ -21,8 +21,14 @@ function ToggleLoadingProvider({ children }) {
   useEffect(() => {
     setTimeout(() => {
       toggleIsOpenLoading(false);
-    }, 1000);
+    }, 2000);
   }, []);
+
+  /* call change route from ext of header */
+  const [changeRouteDemand, setChangeRouteDemand] = useState();
+  const changeRouteHandler = (direction) => {
+    setChangeRouteDemand(direction);
+  };
 
   return (
     <ToggleLoadingContext.Provider
@@ -31,6 +37,8 @@ function ToggleLoadingProvider({ children }) {
         toggleIsOpenLoading,
         isReady,
         toggleIsReady,
+        changeRouteDemand,
+        changeRouteHandler,
       }}
     >
       {children}

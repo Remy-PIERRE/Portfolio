@@ -1,8 +1,6 @@
 import { createContext, useState, useEffect } from "react";
 import {
   collection,
-  addDoc,
-  getDoc,
   getDocs,
   doc,
   setDoc,

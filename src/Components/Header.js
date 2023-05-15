@@ -46,42 +46,11 @@ function Header() {
         : "navAnim 1s forwards reverse"
       : null;
 
-  // useEffect(() => {
-  //   if (isReady["nav"] || !respNavRef.current) return;
-  //   const listenerHandler = () => {
-  //     const readyStates = { ...isReady };
-  //     readyStates["nav"] = true;
-  //     setIsReady(readyStates);
-  //   };
-  //   respNavRef.current.addEventListener("animationend", listenerHandler);
-  //   return () => {
-  //     if (respNavRef.current)
-  //       respNavRef.current.removeEventListener("animationend", listenerHandler);
-  //   };
-  // }, [isReady]);
-
   /* log modal handling */
   const logModalRef = useRef();
   const logModalAnim = isOpen["log"]
     ? "logModalAnim 1s forwards"
     : "logModalAnim 1s forwards reverse";
-
-  // useEffect(() => {
-  //   if (isReady["log"] || !logModalRef.current) return;
-  //   const listenerHandler = () => {
-  //     const readyStates = { ...isReady };
-  //     readyStates["log"] = true;
-  //     setIsReady(readyStates);
-  //   };
-  //   logModalRef.current.addEventListener("animationend", listenerHandler);
-  //   return () => {
-  //     if (logModalRef.current)
-  //       logModalRef.current.removeEventListener(
-  //         "animationend",
-  //         listenerHandler
-  //       );
-  //   };
-  // }, [isReady]);
 
   useEffect(() => {
     if (
@@ -112,7 +81,16 @@ function Header() {
 
   /* log form handle */
   const formRef = useRef();
-  const inputsRef = useRef([]);
+  const [inputsValue, setInputsValue] = useState({
+    email: "",
+    psw: "",
+    pswConfirm: "",
+  });
+  const [inputsValid, setInputsValid] = useState({
+    email: false,
+    psw: false,
+    pswConfirm: false,
+  });
   const [createOrLogIn, setCreateOrLogIn] = useState("create");
 
   /* handle error msg */
@@ -122,13 +100,50 @@ function Header() {
     if (!logErrorMsg) return;
     setTimeout(() => {
       setLogErrorMsg(false);
-    }, 2000);
+    }, 3000);
   }, [logErrorMsg]);
+
+  const changeInputValueHandler = (event) => {
+    const value = event.target.value;
+    const values = { ...inputsValue };
+    values[event.target.name] = value;
+    setInputsValue(values);
+  };
 
   /* regex */
   const emailReg = /^[A-Za-z0-9_!#$%&'*+/=?`{|}~^.-]+@[A-Za-z0-9.-]+$/;
   const pswReg =
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+  useEffect(() => {
+    const valids = { ...inputsValid };
+    for (const [key, value] of Object.entries(inputsValue)) {
+      switch (key) {
+        case "email":
+          if (value === "") {
+            valids[key] = false;
+          } else {
+            valids[key] = emailReg.test(value) ? "valid" : "invalid";
+          }
+          break;
+        case "psw":
+          if (value === "") {
+            valids[key] = false;
+          } else {
+            valids[key] = pswReg.test(value) ? "valid" : "invalid";
+          }
+          break;
+        case "pswConfirm":
+          if (value === "") {
+            valids[key] = false;
+          } else {
+            valids[key] = value === inputsValue["psw"] ? "valid" : "invalid";
+          }
+          break;
+      }
+    }
+    setInputsValid(valids);
+  }, [inputsValue]);
 
   /* security and firebase */
   const {
@@ -138,31 +153,24 @@ function Header() {
     signOutHandler: signOut,
   } = useContext(UserContext);
 
-  const submitHandler = () => {
-    if (
-      inputsRef.current["email"].value === "" ||
-      !emailReg.test(inputsRef.current["email"].value)
-    )
-      setLogErrorMsg("E-mail incorrecte.");
-    if (
-      inputsRef.current["psw"].value === "" ||
-      !pswReg.test(inputsRef.current["psw"].value)
-    )
-      setLogErrorMsg("Mot de passe incorrecte.");
-    if (
-      createOrLogIn === "create" &&
-      inputsRef.current["psw"].value != inputsRef.current["pswConfirm"].value
-    )
-      setLogErrorMsg("Les mots de passe doivent correspondre.");
+  const submitHandler = async () => {
+    if (inputsValid["email"] != "valid")
+      return setLogErrorMsg("E-mail incorrecte.");
+    if (inputsValid["psw"] != "valid")
+      return setLogErrorMsg("Mot de passe incorrecte.");
+    if (createOrLogIn === "create" && inputsValid["pswConfirm"] != "valid")
+      return setLogErrorMsg("Les mots de passe doivent correspondre.");
 
+    let errorMsg;
     if (createOrLogIn === "create")
-      signUp(inputsRef.current["email"].value, inputsRef.current["psw"].value);
-
+      errorMsg = await signUp(inputsValue["email"], inputsValue["psw"]);
     if (createOrLogIn === "logIn")
-      logIn(inputsRef.current["email"].value, inputsRef.current["psw"].value);
-
-    setIsOpen({ nav: false, log: false });
-    setIsReady({ nav: false, log: false });
+      errorMsg = await logIn(inputsValue["email"], inputsValue["psw"]);
+    if (errorMsg) return setLogErrorMsg(errorMsg);
+    else {
+      setIsOpen({ nav: false, log: false });
+      setIsReady({ nav: false, log: false });
+    }
   };
 
   /* signOut */
@@ -182,6 +190,8 @@ function Header() {
     toggleIsOpenLoading,
     isReady: isReadyLoading,
     toggleIsReady,
+    changeRouteDemand,
+    changeRouteHandler,
   } = useContext(ToggleLoadingContext);
   const [direction, setDirection] = useState();
 
@@ -195,20 +205,26 @@ function Header() {
     setDirection(targetedPage);
   };
 
+  useEffect(() => {
+    if (!changeRouteDemand) return;
+    navigationHandler(changeRouteDemand);
+    changeRouteHandler(false);
+  }, [changeRouteDemand]);
+
   /* auto close loading */
   useEffect(() => {
     if (!isReadyLoading || !direction) return;
     navigate(direction);
     setTimeout(() => {
       toggleIsOpenLoading(false);
-    }, 500);
+    }, 2000);
   }, [isReadyLoading]);
 
   return (
     <header className="header__main">
       <div className="header__wrapper">
         <div className="header__logo__wraper">
-          <img src="/images/logo-v1.png" />
+          <img src="/images/logo_remdev.png" />
         </div>
 
         <div className="header__openNav__resp">
@@ -276,11 +292,16 @@ function Header() {
         ref={logModalRef}
         style={{ animation: !isReady["log"] ? logModalAnim : null }}
       >
+        <div className="header__logModal__background" />
+
         <div
           className="header__logModal__close__wrapper"
           onClick={() => openCloseHandler("log")}
         >
-          <img src="/images/cancel.png" />
+          <img
+            src="/icons/arrow-right.png"
+            style={{ transform: "rotate(180deg)" }}
+          />
         </div>
 
         <div className="header__logModal__headSwitch__wrapper">
@@ -298,28 +319,70 @@ function Header() {
           </button>
         </div>
 
-        <div className="header__logModal__errorMsh__wrapper">
-          <p>{logErrorMsg}</p>
-        </div>
-
         <form className="header__logModal__form" ref={formRef}>
+          <div className="header__logModal__errorMsh__wrapper">
+            <p>{logErrorMsg}</p>
+          </div>
+
           <div>
-            <label htmlFor="email">E-mail :</label>
+            <label
+              className={inputsValue["email"] ? "gotValue" : null}
+              htmlFor="email"
+            >
+              E-mail :
+            </label>
             <input
-              ref={(el) => (inputsRef.current["email"] = el)}
               name="email"
+              onChange={changeInputValueHandler}
+              value={inputsValue["email"]}
+              className={
+                inputsValid["email"]
+                  ? inputsValid["email"] === "valid"
+                    ? "valid"
+                    : "invalid"
+                  : null
+              }
             />
           </div>
           <div>
-            <label htmlFor="psw">Mot de passe :</label>
-            <input ref={(el) => (inputsRef.current["psw"] = el)} name="psw" />
+            <label
+              className={inputsValue["psw"] ? "gotValue" : null}
+              htmlFor="psw"
+            >
+              Mot de passe :
+            </label>
+            <input
+              name="psw"
+              onChange={changeInputValueHandler}
+              value={inputsValue["psw"]}
+              className={
+                inputsValid["psw"]
+                  ? inputsValid["psw"] === "valid"
+                    ? "valid"
+                    : "invalid"
+                  : null
+              }
+            />
           </div>
           {createOrLogIn === "create" && (
             <div>
-              <label htmlFor="pwsConfirm">Confirmation :</label>
+              <label
+                className={inputsValue["pswConfirm"] ? "gotValue" : null}
+                htmlFor="pswConfirm"
+              >
+                Confirmation :
+              </label>
               <input
-                ref={(el) => (inputsRef.current["pswConfirm"] = el)}
                 name="pswConfirm"
+                onChange={changeInputValueHandler}
+                value={inputsValue["pswConfirm"]}
+                className={
+                  inputsValid["pswConfirm"]
+                    ? inputsValid["pswConfirm"] === "valid"
+                      ? "valid"
+                      : "invalid"
+                    : null
+                }
               />
             </div>
           )}
@@ -328,7 +391,13 @@ function Header() {
         <div className="header__logModal__submit__wrapper">
           <img
             src="/images/reset.png"
-            onClick={() => formRef.current.reset()}
+            onClick={() =>
+              setInputsValue({
+                email: "",
+                psw: "",
+                pswConfirm: "",
+              })
+            }
           />
           <img src="/images/check.png" onClick={submitHandler} />
         </div>

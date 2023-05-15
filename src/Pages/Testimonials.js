@@ -139,14 +139,22 @@ function Testimonials() {
 
         <div className="testimonials__status__wrapper">
           <div className="testimonials__status">
-            <p>Status :</p>
-            {!currentUser && <p>Non connecté</p>}
-            {currentUser && <p>Connecté</p>}
+            <div>
+              <p>Statue :</p>
+              {!currentUser && <p>Non connecté</p>}
+              {currentUser && <p>Connecté</p>}
+            </div>
+            <img src={`/images/voyant_${currentUser ? "vert" : "rouge"}.png`} />
           </div>
           <div className="testimonials__status">
-            <p>Message :</p>
-            {!userTestimonial && <p>Pas de message</p>}
-            {userTestimonial && <p>Message enregistré</p>}
+            <div>
+              <p>Message :</p>
+              {!userTestimonial && <p>Pas de message</p>}
+              {userTestimonial && <p>Message enregistré</p>}
+            </div>{" "}
+            <img
+              src={`/images/voyant_${userTestimonial ? "vert" : "rouge"}.png`}
+            />
           </div>
         </div>
 
