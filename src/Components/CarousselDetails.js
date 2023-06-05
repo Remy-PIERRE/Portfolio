@@ -130,7 +130,7 @@ function CarousselDetails({ data, nextIndex }) {
             <div className="carousselDetails__nextIndex__wrapper">
               <div className="carousselDetails__nextIndex__img__wrapper outlet__box">
                 <img
-                  src={`images/${nextIndex.data.imgs[0]}.png`}
+                  src={`images/${nextIndex.data.imgs[0]}.webp`}
                   className="imgCover"
                 />
               </div>
