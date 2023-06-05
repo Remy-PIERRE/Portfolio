@@ -82,7 +82,7 @@ function TestimonialsCaroussel({ selectedTestimonials }) {
 
     while (count < displayedCardsNumber) {
       cards.push(
-        <TestimonialCard key={index} data={selectedTestimonials[index].data} />
+        <TestimonialCard key={count} data={selectedTestimonials[index].data} />
       );
       count += 1;
       index = index === maxTestimonialsDisplayed - 1 ? 0 : index + 1;
@@ -92,7 +92,7 @@ function TestimonialsCaroussel({ selectedTestimonials }) {
   };
 
   return (
-    <section className="testimonials__caroussel__body">
+    <section className="testimonials__caroussel__body flexRowCC">
       {!selectedTestimonials && <p>LOADING...</p>}
       {selectedTestimonials === "error" && (
         <p>Erreur lors du chargement des données.</p>
@@ -100,7 +100,7 @@ function TestimonialsCaroussel({ selectedTestimonials }) {
       {selectedTestimonials != "error" && (
         <div
           ref={testimonialsScreenRef}
-          className="testimonials__caroussel__screen"
+          className="testimonials__caroussel__screen absolute_50_50"
           style={{
             width:
               windowWidth < 768
@@ -119,15 +119,17 @@ function TestimonialsCaroussel({ selectedTestimonials }) {
           {displayedCards()}
         </div>
       )}
-      {selectedTestimonials.length >= displayedCardsNumber && (
-        <div className="testimonials__caroussel__buttons">
+      {selectedTestimonials.length >= displayedCardsNumber - 1 && (
+        <div className="testimonials__caroussel__buttons absolute_50_50 flexRowSpaceBetween">
           <img
-            src="images/chevron.png"
+            className="pointer"
+            src="icons/chevron.png"
             style={{ transform: "rotate(90deg)" }}
             onClick={() => setInAnimation("prev")}
           />
           <img
-            src="images/chevron.png"
+            className="pointer"
+            src="icons/chevron.png"
             style={{ transform: "rotate(-90deg)" }}
             onClick={() => setInAnimation("next")}
           />

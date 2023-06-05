@@ -2,16 +2,15 @@ import { useContext, useState, useEffect, useRef } from "react";
 import { UserContext } from "../Context/UserContext";
 import { DataContext } from "../Context/DataContext";
 import TestimonialsCaroussel from "../Components/TestimonialsCaroussel";
+import { updateCurrentUser } from "firebase/auth";
 
 function Testimonials() {
   /* get selection of testimonials */
   const {
-    testimonials,
     getDataHandler,
     selectedTestimonials,
     userTestimonial,
     getUserTestimonial,
-    resetUserTestimonial,
     createUserMsg,
     updateUserMsg,
   } = useContext(DataContext);
@@ -24,8 +23,8 @@ function Testimonials() {
   const { currentUser } = useContext(UserContext);
 
   useEffect(() => {
-    if (!currentUser) return;
-    else getUserTestimonial(currentUser);
+    if (!currentUser && msgModalIsOpen) return openMsgModalHandler();
+    else if (currentUser) getUserTestimonial(currentUser);
   }, [currentUser]);
 
   /* msg modal handler */
@@ -57,97 +56,160 @@ function Testimonials() {
     };
   }, [msgModalIsReady]);
 
-  /* msgModal form handle */
-  const msgModalFormRef = useRef();
-  const msgModalInputsRef = useRef([]);
+  /* handle form from msg modal */
+  /* input and text area handle */
+  const [inputsValues, setInputsValues] = useState({
+    user: "",
+    msg: "",
+  });
+  const [inputsValid, setInputsValid] = useState({
+    user: false,
+    msg: false,
+  });
 
-  const msgModalFormResetHandler = () => {
-    if (!msgModalFormRef.current) return;
-    msgModalFormRef.current.reset();
+  useEffect(() => {
+    if (!userTestimonial)
+      return setInputsValues({
+        user: "",
+        msg: "",
+      });
+    setInputsValues({
+      user: userTestimonial.data.user,
+      msg: userTestimonial.data.msg,
+    });
+    setInputsValid({ user: "valid", msg: "valid" });
+  }, [userTestimonial]);
+
+  const changeInputValueHandler = (event) => {
+    const value = event.target.value;
+    const values = { ...inputsValues };
+    values[event.target.name] = value;
+    setInputsValues(values);
   };
 
   /* regex */
   const userRegex = /^[a-zA-Z\u00C0-\u00FF0-9s ]{3,18}$/;
   const msgRegex = /.*<[^<]*>.*/;
-  const [msgModalErrorMsg, setMsgModalErrorMsg] = useState();
+
+  useEffect(() => {
+    const valids = { ...inputsValid };
+    for (const [key, value] of Object.entries(inputsValues)) {
+      switch (key) {
+        case "user":
+          if (value === "") {
+            valids[key] = false;
+          } else {
+            valids[key] = userRegex.test(value) ? "valid" : "invalid";
+          }
+          break;
+        case "msg":
+          if (value === "") {
+            valids[key] = false;
+          } else {
+            valids[key] =
+              !msgRegex.test(value) && value.length < 150 ? "valid" : "invalid";
+          }
+          break;
+      }
+    }
+    setInputsValid(valids);
+  }, [inputsValues, currentUser]);
+
+  /* error handling */
+  const [errorMsg, setErrorMsg] = useState();
+  const [errorInputAnim, setErrorInputAnim] = useState({
+    name: false,
+    msg: false,
+  });
+
+  useEffect(() => {
+    if (!errorMsg) return;
+    setTimeout(() => {
+      setErrorMsg(false);
+      setErrorInputAnim({
+        name: false,
+
+        msg: false,
+      });
+    }, 3000);
+  }, [errorMsg]);
 
   /* error message handle */
   useEffect(() => {
-    if (!msgModalErrorMsg) return;
+    if (!errorMsg) return;
     setTimeout(() => {
-      setMsgModalErrorMsg(false);
+      setErrorMsg(false);
     }, 2000);
-  }, [msgModalErrorMsg]);
+  }, [errorMsg]);
 
-  const msgModalSubmitHandler = () => {
-    if (!msgModalInputsRef.current.user || !msgModalInputsRef.current.msg)
-      return;
-    if (userTestimonial && msgModalInputsRef.current.user.value === "")
-      msgModalInputsRef.current.user.value = userTestimonial.data.user;
-    if (userTestimonial && msgModalInputsRef.current.msg.value === "")
-      msgModalInputsRef.current.msg.value = userTestimonial.data.msg;
-    if (
-      (!userTestimonial && msgModalInputsRef.current.user.value === "") ||
-      !userRegex.test(msgModalInputsRef.current.user.value)
-    )
-      return setMsgModalErrorMsg("Erreur lors de la saisie du nom.");
-    if (
-      (!userTestimonial && msgModalInputsRef.current.msg.value === "") ||
-      msgRegex.test(msgModalInputsRef.current.msg.value) ||
-      msgModalInputsRef.current.msg.value.length > 100
-    )
-      return setMsgModalErrorMsg("Erreur lors de la saisie du message.");
+  /* msgModal form handle */
+  const msgModalFormRef = useRef();
+
+  const msgModalSubmitHandler = (e) => {
+    e.preventDefault();
+    if (!msgModalFormRef) return;
+
+    for (const [key, value] of Object.entries(inputsValid)) {
+      if ([false, "invalid"].includes(value)) {
+        const errInputs = { ...errorInputAnim };
+        errInputs[key] = true;
+        setErrorInputAnim(errInputs);
+        let keyName;
+        if (key === "user") keyName = "nom";
+        if (key === "msg") keyName = "message";
+        return setErrorMsg(`La categorie "${keyName}" doit être completée.`);
+      }
+    }
 
     /* handle values */
-    const message = {};
+    const newMessage = {};
     if (
       !userTestimonial ||
-      !["", userTestimonial.data.user].includes(
-        msgModalInputsRef.current.user.value
-      )
+      !["", userTestimonial.data.user].includes(inputsValues["user"])
     )
-      message["user"] = msgModalInputsRef.current.user.value;
+      newMessage["user"] = inputsValues["user"];
     if (
       !userTestimonial ||
-      !["", userTestimonial.data.msg].includes(
-        msgModalInputsRef.current.msg.value
-      )
+      !["", userTestimonial.data.msg].includes(inputsValues["msg"])
     )
-      message["msg"] = msgModalInputsRef.current.msg.value;
+      newMessage["msg"] = inputsValues["msg"];
 
-    if (userTestimonial && (message.user || message.msg))
-      updateUserMsg(currentUser, message);
-    else if (message["user"] && message["msg"])
-      createUserMsg(currentUser, message);
+    if (userTestimonial && (newMessage.user || newMessage.msg))
+      updateUserMsg(currentUser, newMessage);
+    else if (newMessage["user"] && newMessage["msg"])
+      createUserMsg(currentUser, newMessage);
 
-    openMsgModalHandler();
+    setErrorMsg("Merci. Le message sera visible après validation.");
+    setTimeout(() => {
+      openMsgModalHandler();
+    }, 2000);
   };
 
-  // if (userTestimonial) console.log(userTestimonial);
-
   return (
-    <main className="testimonials__body">
-      <h1 className="testimonials__title">LIVRE D'OR</h1>
+    <main className="testimonials__body flexColCC">
+      <h1 className="testimonials__title page__title outlet__box goldenBorder">
+        LIVRE D'OR
+      </h1>
 
-      <section className="testimonials__section">
-        <div className="testimonials__msg__wrapper">
-          {!currentUser && <p>Connectez vous pour me laisser un message.</p>}
+      <section className="testimonials__section outlet__box">
+        <div className="testimonials__msg__wrapper outlet__box">
+          {!currentUser && <p>Connectez-vous pour me laisser un message.</p>}
           {currentUser && (
             <p>Vous pouvez me laisser un message ou le modifier.</p>
           )}
         </div>
 
-        <div className="testimonials__status__wrapper">
-          <div className="testimonials__status">
-            <div>
-              <p>Statue :</p>
+        <div className="testimonials__status__wrapper flexColCC">
+          <div className="testimonials__status flexRowSpaceBetween outlet__box">
+            <div className="flexColCC">
+              <p>Statut :</p>
               {!currentUser && <p>Non connecté</p>}
               {currentUser && <p>Connecté</p>}
             </div>
             <img src={`/images/voyant_${currentUser ? "vert" : "rouge"}.png`} />
           </div>
-          <div className="testimonials__status">
-            <div>
+          <div className="testimonials__status  flexRowSpaceBetween  outlet__box">
+            <div className="flexColCC">
               <p>Message :</p>
               {!userTestimonial && <p>Pas de message</p>}
               {userTestimonial && <p>Message enregistré</p>}
@@ -163,7 +225,10 @@ function Testimonials() {
             !currentUser ? "invisible" : null
           }`}
         >
-          <button onClick={currentUser ? openMsgModalHandler : null}>
+          <button
+            className="simple__button"
+            onClick={currentUser ? openMsgModalHandler : null}
+          >
             Message
           </button>
         </div>
@@ -171,50 +236,102 @@ function Testimonials() {
         <div
           ref={msgModalRef}
           style={{ animation: !msgModalIsReady ? msgModalAnim : null }}
-          className={`msgModal ${
+          className={`msgModal flexColCC ${
             msgModalIsReady ? (msgModalIsOpen ? "isOpen" : "isClose") : null
           }`}
         >
-          <img
-            onClick={openMsgModalHandler}
-            src="/images/chevron.png"
-            style={{ transform: "rotate(180deg)" }}
-            className="msgModal__closeButton"
-          />
-          <h3 className="msgModal__title">REDIGER UN MESSAGE</h3>
-          <p className="msgModal__error">{msgModalErrorMsg}</p>
-          <form ref={msgModalFormRef} className="msgModal__form">
+          <button className="msgModal__closeButton simple__button">
+            <img
+              onClick={openMsgModalHandler}
+              src="/icons/arrow-right.png"
+              style={{ transform: "rotate(-90deg)" }}
+              className="imgCover"
+            />
+          </button>
+          <h3 className="msgModal__title outlet__box goldenBorder page__title">
+            REDIGER UN MESSAGE
+          </h3>
+          <p className="msgModal__error">{errorMsg}</p>
+          <form
+            ref={msgModalFormRef}
+            className="msgModal__form outlet__box goldenBorder"
+          >
             <div className="msgModal__form__input__wrapper">
-              <label htmlFor="user">Votre nom :</label>
+              <label
+                className={inputsValues["user"] ? "gotValue" : null}
+                htmlFor="user"
+              >
+                Votre nom
+              </label>
               <input
                 name="user"
-                ref={(el) => (msgModalInputsRef.current["user"] = el)}
-                placeholder={userTestimonial ? userTestimonial.data.user : null}
+                onChange={changeInputValueHandler}
+                value={inputsValues["user"]}
+                className={
+                  inputsValid["user"]
+                    ? inputsValid["user"] === "valid"
+                      ? "valid"
+                      : "invalid"
+                    : null
+                }
+                style={{
+                  animation: errorInputAnim["user"]
+                    ? "errorInputAnim 1s infinite "
+                    : null,
+                }}
               />
             </div>
             <div className="msgModal__form__input__wrapper">
-              <label htmlFor="msg">Votre message :</label>
+              <label
+                className={inputsValues["msg"] ? "gotValue" : null}
+                htmlFor="msg"
+              >
+                Votre message
+              </label>
               <textarea
                 name="msg"
-                ref={(el) => (msgModalInputsRef.current["msg"] = el)}
-                placeholder={userTestimonial ? userTestimonial.data.msg : null}
+                onChange={changeInputValueHandler}
+                value={inputsValues["msg"]}
+                className={
+                  inputsValid["msg"]
+                    ? inputsValid["msg"] === "valid"
+                      ? "valid"
+                      : "invalid"
+                    : null
+                }
+                style={{
+                  animation: errorInputAnim["msg"]
+                    ? "errorInputAnim 1s infinite "
+                    : null,
+                }}
               />
             </div>
           </form>
-          <div className="msgModal__submit__wrapper">
-            <img
-              src="/images/voyant_reset.png"
-              onClick={msgModalFormResetHandler}
-            />
-            <img
-              src="/images/voyant_confirm.png"
-              onClick={msgModalSubmitHandler}
-            />
+          <div className="msgModal__submit__wrapper flexRowSpaceBetween">
+            <div className="msgModal__submit__button simple__button">
+              <img
+                src="/icons/reset.png"
+                onClick={() =>
+                  userTestimonial
+                    ? setInputsValues({
+                        user: userTestimonial.data.user,
+                        msg: userTestimonial.data.msg,
+                      })
+                    : setInputsValues({
+                        user: "",
+                        msg: "",
+                      })
+                }
+              />
+            </div>
+            <div className="msgModal__submit__button simple__button">
+              <img src="/icons/check.png" onClick={msgModalSubmitHandler} />
+            </div>
           </div>
         </div>
       </section>
 
-      {selectedTestimonials && (
+      {selectedTestimonials && selectedTestimonials.length > 0 && (
         <TestimonialsCaroussel selectedTestimonials={selectedTestimonials} />
       )}
     </main>

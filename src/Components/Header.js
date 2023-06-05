@@ -17,6 +17,17 @@ function Header() {
   });
 
   const openCloseHandler = (modal) => {
+    if (modal === "both") {
+      setIsOpen({
+        nav: false,
+        log: false,
+      });
+      setIsReady({
+        nav: false,
+        log: false,
+      });
+      return;
+    }
     if (!isReady[modal]) return;
     const openStates = { ...isOpen };
     openStates[modal] = !openStates[modal];
@@ -157,7 +168,11 @@ function Header() {
     if (inputsValid["email"] != "valid")
       return setLogErrorMsg("E-mail incorrecte.");
     if (inputsValid["psw"] != "valid")
-      return setLogErrorMsg("Mot de passe incorrecte.");
+      return createOrLogIn === "create"
+        ? setLogErrorMsg(
+            "1 majuscule, 1 minuscule, 1 caractère spécial et 6 caractères minimum pour un mot de passe valide."
+          )
+        : setLogErrorMsg("Mot de passe incorrecte.");
     if (createOrLogIn === "create" && inputsValid["pswConfirm"] != "valid")
       return setLogErrorMsg("Les mots de passe doivent correspondre.");
 
@@ -222,71 +237,104 @@ function Header() {
 
   return (
     <header className="header__main">
-      <div className="header__wrapper">
+      <div className="header__wrapper flexRowSpaceBetween">
         <div className="header__logo__wraper">
           <img src="/images/logo_remdev.png" />
         </div>
 
         <div className="header__openNav__resp">
-          <button onClick={() => openCloseHandler("nav")}></button>
+          <img
+            src={
+              isOpen["nav"] ? "/icons/error_borderless.png" : "/icons/menu.png"
+            }
+            onClick={() => {
+              if (isOpen["log"]) openCloseHandler("both");
+              else openCloseHandler("nav");
+            }}
+          />
         </div>
 
         <nav
-          className={`header__nav__wrapper ${
+          className={`header__nav__wrapper flexColSpaceBetween ${
             isReady["nav"] && isOpen["nav"] ? "isOpen" : "isClose"
           }`}
           ref={respNavRef}
           style={{ animation: !isReady["nav"] ? navAnim : null }}
         >
-          <div className="header__nav__links__wrapper">
-            <div onClick={() => navigationHandler("/")}>ACCUEIL</div>
-            <div onClick={() => navigationHandler("/a-propos")}>
-              PRESENTATION
+          <div className="header__nav__links__wrapper flexColCC">
+            <div className="pointer" onClick={() => navigationHandler("/")}>
+              ACCUEIL
             </div>
-            <div onClick={() => navigationHandler("/competences")}>
-              COMPETENCES
+            <div
+              className="pointer"
+              onClick={() => navigationHandler("/a-propos")}
+            >
+              PR&Eacute;SENTATION
             </div>
-            <div onClick={() => navigationHandler("/galerie")}>GALERIE</div>
-            <div onClick={() => navigationHandler("/livre-dor")}>
+            <div
+              className="pointer"
+              onClick={() => navigationHandler("/competences")}
+            >
+              COMP&Eacute;TENCES
+            </div>
+            <div
+              className="pointer"
+              onClick={() => navigationHandler("/galerie")}
+            >
+              GALERIE
+            </div>
+            <div
+              className="pointer"
+              onClick={() => navigationHandler("/livre-dor")}
+            >
               LIVRE D'OR
             </div>
-            <div onClick={() => navigationHandler("contact")}>CONTACT</div>
+            <div
+              className="pointer"
+              onClick={() => navigationHandler("contact")}
+            >
+              CONTACT
+            </div>
           </div>
 
-          <div className="header__nav__icons__wrapper">
+          <div className="header__nav__icons__wrapper flexRowSpaceBetween">
             {!currentUser && (
               <img
+                className="pointer"
                 src={
                   windowWidth > 976
-                    ? "/images/user.png"
-                    : "/images/user_white.png"
+                    ? "/icons/user.png"
+                    : "/icons/user_white.png"
                 }
                 onClick={() => openCloseHandler("log")}
               />
             )}
             {currentUser && (
               <img
+                className="pointer"
                 src={
                   windowWidth > 976
-                    ? "/images/power-off.png"
-                    : "/images/power-off_white.png"
+                    ? "/icons/power-off.png"
+                    : "/icons/power-off_white.png"
                 }
                 onClick={() => signOutHandler()}
               />
             )}
-            <img
-              src={
-                windowWidth > 976
-                  ? "/images/pdf-file.png"
-                  : "/images/pdf-file_white.png"
-              }
-            />
+
+            <a href="/pdf/remy_pierre_cv.pdf">
+              <img
+                className="pointer"
+                src={
+                  windowWidth > 976 ? "/icons/cv.png" : "/icons/cv_white.png"
+                }
+              />
+            </a>
           </div>
         </nav>
       </div>
 
       <section
-        className={`header__logModal__wrapper ${
+        className={`header__logModal__wrapper flexColSpaceBetween ${
           isReady["log"] && isOpen["log"] ? "isOpen" : "isClose"
         }`}
         ref={logModalRef}
@@ -295,7 +343,7 @@ function Header() {
         <div className="header__logModal__background" />
 
         <div
-          className="header__logModal__close__wrapper"
+          className="header__logModal__close__wrapper header__logModal__button"
           onClick={() => openCloseHandler("log")}
         >
           <img
@@ -304,24 +352,31 @@ function Header() {
           />
         </div>
 
-        <div className="header__logModal__headSwitch__wrapper">
+        <div className="header__logModal__headSwitch__wrapper outlet__box goldenBorder">
           <button
-            className={createOrLogIn === "create" ? "active" : null}
+            className={`simple__button ${
+              createOrLogIn === "create" ? "active" : null
+            }`}
             onClick={() => setCreateOrLogIn("create")}
           >
             Créer un compte
           </button>
           <button
-            className={createOrLogIn === "logIn" ? "active" : null}
+            className={`simple__button ${
+              createOrLogIn === "logIn" ? "active" : null
+            }`}
             onClick={() => setCreateOrLogIn("logIn")}
           >
             Se connecter
           </button>
         </div>
 
-        <form className="header__logModal__form" ref={formRef}>
+        <form
+          className="header__logModal__form outlet__box goldenBorder"
+          ref={formRef}
+        >
           <div className="header__logModal__errorMsh__wrapper">
-            <p>{logErrorMsg}</p>
+            <p style={{ width: "80%", margin: "auto" }}>{logErrorMsg}</p>
           </div>
 
           <div>
@@ -388,9 +443,10 @@ function Header() {
           )}
         </form>
 
-        <div className="header__logModal__submit__wrapper">
+        <div className="header__logModal__submit__wrapper outlet__box goldenBorder">
           <img
-            src="/images/reset.png"
+            className="header__logModal__button"
+            src="/icons/reset.png"
             onClick={() =>
               setInputsValue({
                 email: "",
@@ -399,7 +455,11 @@ function Header() {
               })
             }
           />
-          <img src="/images/check.png" onClick={submitHandler} />
+          <img
+            className="header__logModal__button"
+            src="/icons/check.png"
+            onClick={submitHandler}
+          />
         </div>
       </section>
     </header>

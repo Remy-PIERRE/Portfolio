@@ -1,4 +1,4 @@
-import { createContext, useState, useEffect } from "react";
+import { createContext, useState, useEffect, useContext } from "react";
 import {
   collection,
   getDocs,
@@ -7,8 +7,10 @@ import {
   updateDoc,
   query,
   where,
+  serverTimestamp,
 } from "firebase/firestore";
 import { db } from "../Utils/firebase-config";
+import { UserContext } from "./UserContext";
 
 const DataContext = createContext();
 
@@ -26,7 +28,8 @@ const DataProvider = ({ children }) => {
       const res = await getDocs(req);
       const testimonialsCollection = [];
       res.forEach((el) => {
-        testimonialsCollection.push({ id: el.id, data: el.data() });
+        if (el.data().auth === true)
+          testimonialsCollection.push({ id: el.id, data: el.data() });
       });
       setTestimonials(testimonialsCollection);
     } catch (err) {
@@ -59,6 +62,8 @@ const DataProvider = ({ children }) => {
   }, [testimonials]);
 
   /* user testimonial */
+  const { currentUser } = useContext(UserContext);
+
   const [userTestimonial, setUserTestimonial] = useState();
 
   const getUserTestimonial = (currentUser) => {
@@ -72,19 +77,40 @@ const DataProvider = ({ children }) => {
     setUserTestimonial(false);
   };
 
+  useEffect(() => {
+    if (!currentUser) return setUserTestimonial(false);
+    getUserTestimonial(currentUser);
+  }, [currentUser, testimonials]);
+
   /* create or update message */
   const createUserMsg = async (currentUser, message) => {
-    const docRef = doc(db, "testimonials", currentUser.uid);
-    await setDoc(docRef, message);
-    setUserTestimonial({ id: currentUser.uid, data: message });
-    console.log(message);
+    try {
+      const docRef = doc(db, "testimonials", currentUser.uid);
+      await setDoc(docRef, {
+        ...message,
+        timestamp: serverTimestamp(),
+        auth: false,
+      });
+      setUserTestimonial({ id: currentUser.uid, data: message });
+    } catch (err) {
+      console.log("err", err.code);
+    }
+    getUserTestimonial(currentUser);
   };
 
   const updateUserMsg = async (currentUser, message) => {
-    const docRef = doc(db, "testimonials", currentUser.uid);
-    await updateDoc(docRef, message);
-    setUserTestimonial({ id: currentUser.uid, data: message });
-    console.log(message);
+    try {
+      const docRef = doc(db, "testimonials", currentUser.uid);
+      await updateDoc(docRef, {
+        ...message,
+        timestamp: serverTimestamp(),
+        auth: false,
+      });
+      setUserTestimonial({ id: currentUser.uid, data: message });
+    } catch (err) {
+      console.log("err", err.code);
+    }
+    getUserTestimonial(currentUser);
   };
 
   return (

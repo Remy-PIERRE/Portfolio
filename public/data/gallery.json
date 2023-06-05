@@ -4,11 +4,10 @@
     "data": {
       "title": "Portfolio",
       "description": "Vous êtes ici",
-      "desc2": "Dernier projet de la formation, il est aussi celui qui me servira de carte de visite professionnelle. \n \n J'utilise React pour le frontend sans ajout de bibliothèque (autre que react-router-dom) dans le but d'améliorer mon utilisation du frameworks en 'natif' et d'appréhender les animation et chargements plus en profondeur.  \n \n Backend géré grace à Firebase (auth et FireStore principalement). \n \n N'hésitez pas à laisser un mot dans le livre d'or si le site vous plait !",
+      "desc2": "Dernier projet de la formation, il est aussi celui qui me servira de carte de visite professionnelle. \n \n J'utilise React pour le frontend sans ajout de bibliothèque (autre que react-router-dom) dans le but d'améliorer mon utilisation du frameworks en \"natif\" et d'appréhender les animations et chargements plus en profondeur.  \n \n Backend géré grâce à Firebase (auth et FireStore principalement). \n \n N'hésitez pas à laisser un mot dans le livre d'or si le site vous plait !",
       "cover": "portfolio",
       "links": {
-        "git": "https://github.com/Remy-PIERRE/openclassrooms_dev_web_project_2",
-        "site": "https://remy-pierre.github.io/openclassrooms_dev_web_project_2/"
+        "git": "https://github.com/Remy-PIERRE/Portfolio"
       },
       "imgs": ["portfolio"],
       "techno": ["react", "firebase"],
@@ -20,7 +19,7 @@
     "data": {
       "title": "Booki",
       "description": "Découverte de HTML et CSS",
-      "desc2": "Premier projet de la formation.\n \n Découverte de HTML et CSS, utilisation de flex box et grid, intégration d'icones (fontawesome) et de Google Fonts. \n \n Projet refait plus tard avec Bootstrap pour m'initier à ce framework.",
+      "desc2": "Premier projet de la formation.\n \n Découverte de HTML et CSS, utilisation de flex box et grid, intégration d'icônes (fontawesome) et de Google Fonts. \n \n Projet refait plus tard avec Bootstrap pour m'initier à ce framework.",
       "cover": "booki_1",
       "links": {
         "git": "https://github.com/Remy-PIERRE/openclassrooms_dev_web_project_2",
@@ -36,13 +35,13 @@
     "data": {
       "title": "Portfolio de photographe",
       "description": "Optimisation du site et du SEO",
-      "desc2": "Optimisation d'un site portfolio. \n \n Conversion des nombreuses images au format webp, optimisation de leurs chargements.  \n \n Intégration de Open Graph, Twitter Cards et recherche des mots cléfs pertinents pour un meilleur référencement.  \n \n Correction de bug (et découverte de la bibliothèque JQuery)  \n \n Le résultat du travail à été présenté en tenant compte de la méconnaissance technique en développement web de la cliente.",
-      "cover": "ninaCarducci_1",
+      "desc2": "Optimisation d'un site portfolio. \n \n Conversion des nombreuses images au format webp, optimisation de leurs chargements.  \n \n Intégration de Open Graph, Twitter Cards et recherche des mots-clefs pertinents pour un meilleur référencement.  \n \n Correction de bug (et découverte de la bibliothèque JQuery)  \n \n Le résultat du travail a été présenté en tenant compte de la méconnaissance technique en développement web de la cliente.",
+      "cover": "ninaCarducci-1",
       "links": {
         "git": "https://github.com/Remy-PIERRE/OpenclassRooms_project_5",
         "site": "https://remy-pierre.github.io/OpenclassRooms_project_5/"
       },
-      "imgs": ["ninaCarducci_1", "ninaCarducci_2", "ninaCarducci_3"],
+      "imgs": ["ninaCarducci-1", "ninaCarducci-2", "ninaCarducci-3"],
       "techno": ["html", "bootstrap", "jquery"],
       "filters": ["formation"]
     }
@@ -52,13 +51,13 @@
     "data": {
       "title": "Kasa",
       "description": "Découverte de React",
-      "desc2": "Découverte de React.  \n \n Création d'un routing cohérent avec react-router-dom.  \n \n Utilisation des principaux hooks et réutilisation des composants lorsque cela est possible.  \n \n Je profite de ce projet pour m'initier à TailwindCss que je réutiliserais par la suite.  \n \n J'apprécie beaucoup l'utilisation de React, et j'approffondie la connaissance de ce framework encore aujourd'hui.",
-      "cover": "kasa_1",
+      "desc2": "Découverte de React.  \n \n Création d'un routing cohérent avec react-router-dom.  \n \n Utilisation des principaux hooks et réutilisation des composants lorsque cela est possible.  \n \n Je profite de ce projet pour m'initier à TailwindCss que je réutiliserai par la suite.  \n \n J'apprécie beaucoup l'utilisation de React, et j'approfondis la connaissance de ce framework encore aujourd'hui.",
+      "cover": "kasa-1",
       "links": {
         "git": "https://github.com/Remy-PIERRE/OpenclassRooms_Projet_6_React",
         "site": ""
       },
-      "imgs": ["kasa_1", "kasa_2", "kasa_3"],
+      "imgs": ["kasa-1", "kasa-2", "kasa-3"],
       "techno": ["tailwind", "react"],
       "filters": ["formation"]
     }
@@ -68,13 +67,13 @@
     "data": {
       "title": "Mon vieux grimoire",
       "description": "Découverte de Node.js",
-      "desc2": "Découverte du backend avec Node js.  \n \n Avec l'aide de l'ORM Express, je créé un routing complet pour mon API REST. \n \n  Création et autentification de compte utilisateur, routes sécurisées sont mises en place. \n \n Les données sont stockées sur une BDD Mongo (utilisation de Mongoose).\n \n Utilisation de Multer et Cors pour gérer les transfers de fichiers. RateLimiter et Helmet pour la sécurité.",
-      "cover": "vieuxgrimoire_1",
+      "desc2": "Découverte du backend avec Node js.  \n \n Avec l'aide de l'ORM Express, je créé un routing complet pour mon API REST. \n \n  Création et authentification de compte utilisateur, routes sécurisées mises en place. \n \n Les données sont stockées sur une BDD Mongo (utilisation de Mongoose).\n \n Utilisation de Multer et Cors pour gérer les transferts de fichiers. RateLimiter et Helmet pour la sécurité.",
+      "cover": "vieuxgrimoire-1",
       "links": {
         "git": "https://github.com/Remy-PIERRE/OC_Projet_7_API_Rest_Node.js",
         "site": ""
       },
-      "imgs": ["vieuxgrimoire_1", "vieuxgrimoire_2"],
+      "imgs": ["vieuxgrimoire-1", "vieuxgrimoire-2"],
       "techno": ["node", "react"],
       "filters": ["formation"]
     }
@@ -83,14 +82,14 @@
     "id": 4,
     "data": {
       "title": "Intégration HTML",
-      "desc2": "Demande d'intégration HTML.\n \n Bien plus concéquent qu'un projet de formation (7 pages), le projet doit prendre en compte l'utilisation ultérieure  de php pour les script. \n \n Le projet est en cours actuellement.",
+      "desc2": "Demande d'intégration HTML.\n \n Bien plus conséquent qu'un projet de formation (7 pages), le projet doit prendre en compte l'utilisation ultérieure  de php pour les script. \n \n Le projet est en cours actuellement.",
       "description": "En cours",
-      "cover": "sevenvalley_2",
+      "cover": "sevenvalley-2",
       "links": {
         "git": "",
         "site": ""
       },
-      "imgs": ["sevenvalley_1", "sevenvalley_2", "sevenvalley_3"],
+      "imgs": ["sevenvalley-1", "sevenvalley-2", "sevenvalley-3"],
       "techno": ["html", "css"],
       "filters": ["professionnel"]
     }
@@ -100,13 +99,13 @@
     "data": {
       "title": "La ferme des 2 yourtes",
       "description": "Site e-commerce, en cours de création",
-      "desc2": "Demande de création d'un site E-commerce par un proche. \n \n Le cahier des charges mis en place en collaboration avec ce dernier. \n \n Un WireFrame est  validé et le travail du front (React) est déjà bien entamé. \n \n Back office prévue avec l'utilisation de Node Js et MongoDB pour le backend. \n \n Le projet est en cours.  ",
-      "cover": "ferme2yourtes_1",
+      "desc2": "Demande de création d'un site E-commerce par un proche. \n \n Le cahier des charges a été mis en place en collaboration avec ce dernier. \n \n Un WireFrame est  validé et le travail du front (React) est déjà bien entamé. \n \n Back office prévue avec l'utilisation de Node Js et MongoDB pour le backend. \n \n Le projet est en cours.  ",
+      "cover": "ferme2yourtes-1",
       "links": {
         "git": "",
         "site": ""
       },
-      "imgs": ["ferme2yourtes_1", "ferme2yourtes_2", "ferme2yourtes_3"],
+      "imgs": ["ferme2yourtes-1", "ferme2yourtes_2", "ferme2yourtes_3"],
       "techno": ["react", "tailwind", "node"],
       "filters": ["professionnel"]
     }

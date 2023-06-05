@@ -1,0 +1,62 @@
+[
+  {
+    "name": "Front-End",
+    "filters": [
+      {
+        "name": "HTML",
+        "description": "Utilisation de Html 5 en duo avec Css depuis le début de la formation. \n \n Connaissances en SEO avec l'utilisation de OpenGraph, TwitterCards, recherche et intégration de mots-clefs pour favoriser un meilleur référencement.  \n \n Il reste toujours à apprendre, mais le sujet est pris en main.",
+        "gradient": "75"
+      },
+      {
+        "name": "CSS",
+        "description": "Utilisation de Css 5 en duo avec Html depuis le début de la formation.  \n \n Application des conventions BEM ou OOCSS en fonction des besoins.  \n \n Utilisation de Bootstrap et TailwindCss à plusieurs reprises.  \n \n Il reste toujours à apprendre, mais le sujet est pris en main. ",
+        "gradient": "75"
+      },
+      {
+        "name": "JAVASCRIPT",
+        "description": "Utilisaion de JS à de nombreuses reprises au cours de ma formation ainsi que pour des projets personnels.  \n \n Utilisation des bibliothèques JsPdf et JsEmail, notament lors de la réalisation du portfolio ici-présent.  \n \n C'est un langage que j'apprécie utiliser.",
+        "gradient": "75"
+      },
+      {
+        "name": "REACT",
+        "description": "Découverte de la bilbliothèque au cours de la formation OpenClassRoom.  \n \n J'apprécie beaucoup travailler sur React et j'ai décidé de réaliser le portfolio ici-présent à l'aide de cette technologie.  \n \n Un projet de site e-commerce est en cours de réalisation avec React.",
+        "gradient": "50"
+      }
+    ]
+  },
+  {
+    "name": "Back-End",
+    "filters": [
+      {
+        "name": "NODE JS",
+        "description": "Découvert avant la formation OpenClassRoom, j'ai réalisé plusieurs API modestes avec cette technologie (et l'ORM Express).  \n \n Dérivé de JS, l'utilisation de Node JS est relativement simple.",
+        "gradient": "50"
+      },
+      {
+        "name": "FIREBASE",
+        "description": "Solution d'hébergement sur le Cloud, Firebase met à disposition aux utilisateurs un certain nombres de fonctions fournies par son API.  \n \n Authentification, utilisation de la base de données Firestore avec le portfolio ici-présent.  \n \n Simple d'utilisation et performant, c'est une solution efficace pour héberger gratuitement les sites de taille modeste.",
+        "gradient": "50"
+      },
+      {
+        "name": "SQL",
+        "description": "Apprentissage de ce langage en parallèle de Node JS, peu avant le début de la formation OpenClassRooms.  \n \n Notions principales abordées, cela me permet d'avoir une meilleure compréhension des requêtes SQL. ",
+        "gradient": "25"
+      }
+    ]
+  },
+  {
+    "name": "Autre",
+    "filters": [
+      {
+        "name": "GitHub",
+        "description": "Utilisation de Github pour la sauvegarde et le partage de mes projets.  \n \n N'hésitez pas à aller voir pour en apprendre plus sur mes compétences de développeur. ",
+        "gradient": "50"
+      },
+      {
+        "name": "Gimp2",
+        "description": "Solution gratuite à Photoshop, j'utilise cette application depuis le début de ma formation pour toute retouche ou modification à apporter à mes images. \n \n  Certaines images sur le portfolio ici-même ont été réalisées grâce à ce logiciel.",
+        "gradient": "75"
+      }
+    ]
+  }
+]

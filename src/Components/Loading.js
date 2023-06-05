@@ -34,7 +34,9 @@ function Loading() {
   return (
     <section
       ref={loadingPanelRef}
-      className={`loading__body ${firstLoading ? "firstLoading" : null}`}
+      className={`loading__body flexRowCC ${
+        firstLoading ? "firstLoading" : null
+      }`}
       style={{
         animation: firstLoading ? null : animation,
       }}

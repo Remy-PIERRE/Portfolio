@@ -36,15 +36,16 @@ function About() {
   let text;
   if (selectedSection === 0)
     text = [
-      " A 18 ans, bac scientifique en poche, j'entre dans le monde du travail. Multipliant les experiences au grès des oportunités, je recherche un métier qui me procure satisfaction...",
-      "...Passionné de logique et de résolutions de problèmes, c'est à 36 ans que je décide de rejoindre le monde du développement web et intègre une formation OpenClassRooms...",
-      "... Juillet 2023, me voici diplômé et pret à mettre mes compétences à votre service.",
+      " A 18 ans, bac scientifique en poche, j'entre dans le monde du travail. Multipliant les expériences au gré des opportunités, je recherche un métier qui me procure satisfaction.",
+      "Passionné de logique et de résolutions de problèmes, c'est à 36 ans que je décide de rejoindre le monde du développement web et intègre une formation OpenClassRooms.",
+      "Juillet 2023, me voici diplômé et prêt à mettre mes compétences à votre service.",
     ];
   if (selectedSection === 1)
     text = [
       "Polyvalent, persevérant et toujours ouvert à apprendre, je serai ravi de vous accompagner dans la réalisation de votre projet. Ensemble, nous réaliserons votre site Internet, de la rédaction du cahier des charges à la mise en ligne du site.",
       "N'hésitez pas à consulter mes différentes réalisations disponibles dans la galerie afin d'attester de mon travail et/ou de trouver des idées pour votre propre site. Vous pouvez me contacter à tout moment depuis la section Contact.",
       "À bientôt pour la suite !",
+      "R.P.",
     ];
 
   const selectedText = text.map((el, ind) => {
@@ -59,6 +60,7 @@ function About() {
               : aboutInAnimation == "in"
               ? "blurAnim 2.5s forwards reverse"
               : null,
+          marginBottom: "12px",
         }}
       >
         {el}
@@ -66,42 +68,16 @@ function About() {
     );
   });
 
-  /* toggle button jsx */
-  const [toggleButtonIndex, setToggleButtonIndex] = useState(0);
-
-  const toggleButtons = [...Array(3)].map((el, ind) => {
-    return (
-      <img
-        key={ind}
-        src={
-          toggleButtonIndex === ind
-            ? "/icons/chevron_bottom_black.png"
-            : "/icons/chevron_bottom_grey.png"
-        }
-      />
-    );
-  });
-
-  /* toggle button animation */
-  useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      setToggleButtonIndex((prevState) =>
-        prevState === 2 ? 0 : prevState + 1
-      );
-    }, 250);
-    return () => clearTimeout(timeoutId);
-  });
-
   return (
-    <main className="about__body outlet__body">
-      <h1 className="about__title page__title outlet__box">
+    <main className="about__body outlet__body flexColCC">
+      <h1 className="about__title page__title outlet__box goldenBorder about__box">
         Bonjour, je suis Rémy Pierre...
       </h1>
 
       <section className="about__section flexRowCC">
         <div className="about__section__imgAndTitle__wrapper flexColCC">
           <div className="about__section__img__wrapper flexRowCC">
-            <div className="outlet__box">
+            <div className="outlet__box goldenBorder about__box">
               <img
                 src={selectedSection === 0 ? "/images/portrait_rem.png" : null}
                 style={{
@@ -117,7 +93,7 @@ function About() {
           </div>
 
           <div className="about__section__text__title flexRowCC">
-            <div className=" outlet__box">
+            <div className=" outlet__box goldenBorder about__box">
               <h2
                 className="section__title"
                 style={{
@@ -139,19 +115,25 @@ function About() {
           </div>
         </div>
 
-        <div className="about__section__text__paraph outlet__box flexColCC">
-          {selectedText}
+        <div className="about__section__text__paraph__wrapper">
+          <div className="about__section__text__paraph outlet__box flexColCC goldenBorder about__box">
+            {selectedText}
+          </div>
         </div>
 
         {selectedSection === 1 && (
-          <div className="about__section__navButtons__wrapper">
-            <button onClick={() => changeRouteHandler("/galerie")}>
+          <div className="about__section__navButtons__wrapper flexRowCC">
+            <button
+              className="simple__button"
+              onClick={() => changeRouteHandler("/galerie")}
+            >
               GALERIE
-              <div />
             </button>
-            <button onClick={() => changeRouteHandler("/contact")}>
+            <button
+              className="simple__button"
+              onClick={() => changeRouteHandler("/contact")}
+            >
               CONTACT
-              <div />
             </button>
           </div>
         )}
@@ -160,7 +142,9 @@ function About() {
           className="about__section__toggleButton__wrapper flexRowCC"
           onClick={toggleSectionHandler}
         >
-          <button className="flexColCC">{toggleButtons}</button>
+          <button className="simple__button">
+            {selectedSection === 0 ? "Page suivante" : "Page précédente"}
+          </button>
         </div>
       </section>
     </main>

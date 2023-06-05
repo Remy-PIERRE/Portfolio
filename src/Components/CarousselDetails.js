@@ -79,11 +79,11 @@ function CarousselDetails({ data, nextIndex }) {
 
   return (
     <section className="carousselDetails__body">
-      <div className="outlet__box carousselDetails__title__wrapper">
+      <div className="outlet__box carousselDetails__title__wrapper page__title goldenBorder">
         <h2>Détails</h2>
       </div>
 
-      <div className="carousselDetails__wrapper outlet__box">
+      <div className="carousselDetails__wrapper outlet__box goldenBorder">
         <div
           className="carousselDetails__bigScreen"
           style={{
@@ -100,7 +100,7 @@ function CarousselDetails({ data, nextIndex }) {
                 <>
                   <div className="carousselDetails__img__wrapper outlet__box">
                     <img
-                      src={`images/${data.imgs[index]}.png`}
+                      src={`images/${data.imgs[index]}.webp`}
                       className="imgCover"
                     />
                   </div>
@@ -110,7 +110,7 @@ function CarousselDetails({ data, nextIndex }) {
                         index === data.imgs.length - 1
                           ? data.imgs[0]
                           : data.imgs[index + 1]
-                      }.png`}
+                      }.webp`}
                       className="imgCover"
                     />
                   </div>

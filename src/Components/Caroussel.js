@@ -88,8 +88,8 @@ function Caroussel({ data, indexHandler }) {
   }, [inAnimation]);
 
   return (
-    <section className="caroussel__body">
-      <div className="caroussel__screen outlet__box">
+    <section className="caroussel__body flexColCC">
+      <div className="caroussel__screen outlet__box goldenBorder">
         <div className="caroussel__logo__wrapper">
           <img src="/images/logo_remdev.png" />
         </div>
@@ -103,7 +103,7 @@ function Caroussel({ data, indexHandler }) {
         >
           {data && (
             <img
-              src={`/images/${data.cover}.png`}
+              src={`/images/${data.cover}.webp`}
               className="imgCover"
               style={{ animation: inAnimation["content"] ? contentAnim : null }}
             />
@@ -122,19 +122,19 @@ function Caroussel({ data, indexHandler }) {
               <>
                 <h2>{data.title}</h2>
                 <p>{data.description}</p>
-                <div className="caroussel__text__techno__wrapper">
+                <div className="caroussel__text__techno__wrapper flexRowSpaceBetween">
                   {data.techno.map((el, ind) => (
                     <img key={ind} src={`/icons/${el}.png`} />
                   ))}
                 </div>
-                <div className="caroussel__text__links__wrapper">
+                <div className="caroussel__text__links__wrapper flexRowSpaceBetween">
                   {data.links["git"] && (
-                    <a href={data.links.git}>
+                    <a href={data.links.git} className="pointer">
                       <img src="/icons/github.png" />
                     </a>
                   )}
                   {data.links["site"] && (
-                    <a href={data.links.site}>
+                    <a href={data.links.site} className="pointer">
                       <img src="/icons/site.png" />
                     </a>
                   )}
@@ -145,9 +145,10 @@ function Caroussel({ data, indexHandler }) {
         </div>
       </div>
 
-      <div className="caroussel__buttons__wrapper">
+      <div className="caroussel__buttons__wrapper flexRowSpaceBetween absolute_50_50">
         <img
-          src="images/chevron.png"
+          className="pointer"
+          src="icons/chevron.png"
           onClick={() => {
             if (["in", "out", "translate"].includes(inAnimation["panel"]))
               return;
@@ -157,7 +158,8 @@ function Caroussel({ data, indexHandler }) {
           style={{ transform: "rotate(90deg)" }}
         />
         <img
-          src="images/chevron.png"
+          className="pointer"
+          src="icons/chevron.png"
           onClick={() => {
             if (["in", "out", "translate"].includes(inAnimation["panel"]))
               return;

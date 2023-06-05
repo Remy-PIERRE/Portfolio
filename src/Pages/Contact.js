@@ -59,7 +59,7 @@ function Contact() {
             valids[key] = false;
           } else {
             valids[key] =
-              !msgRegex.test(value) && value.length < 300 ? "valid" : "invalid";
+              !msgRegex.test(value) && value.length < 500 ? "valid" : "invalid";
           }
           break;
       }
@@ -69,6 +69,7 @@ function Contact() {
 
   /* submit and send email if ok */
   const contactFormRef = useRef();
+  const [emailSend, setEmailSend] = useState();
 
   const submitHandler = (e) => {
     e.preventDefault();
@@ -79,30 +80,44 @@ function Contact() {
         const errInputs = { ...errorInputAnim };
         errInputs[key] = true;
         setErrorInputAnim(errInputs);
-        let keyName;
-        if (key === "name") keyName = "nom";
-        if (key === "email") keyName = "e-mail";
-        if (key === "purpose") keyName = "objet du message";
-        if (key === "msg") keyName = "message";
-        return setErrorMsg(`La categorie "${keyName}" doit être completée.`);
+        if (value === false)
+          return setErrorMsg("Toutes les catégories doivent être complétées.");
+        if (key === "name")
+          return setErrorMsg(
+            "3 à 18 caractères et pas de caractère spécial requis pour le nom."
+          );
+        if (key === "email")
+          return setErrorMsg("Le format de l'e-mail n'est pas valide.");
+        if (key === "purpose")
+          return setErrorMsg("50 caractères maximum pour l'objet du message.");
+        if (key === "msg")
+          return setErrorMsg("500 caractères maximum pour l'objet du message.");
       }
     }
 
-    // emailjs
-    //   .sendForm(
-    //     "service_qi2ah8n",
-    //     "template_sxx8fai",
-    //     contactFormRef.current,
-    //     "rSIEe2PuVw7v8R3SN"
-    //   )
-    //   .then(
-    //     (result) => {
-    //       console.log(result.text);
-    //     },
-    //     (error) => {
-    //       console.log(error.text);
-    //     }
-    //   );
+    emailjs
+      .sendForm(
+        process.env.REACT_APP_EMAILJS_SERVICE_ID,
+        process.env.REACT_APP_EMAILJS_TEMPLATE_ID,
+        contactFormRef.current,
+        process.env.REACT_APP_EMAILJS_PUBLIC_KEY
+      )
+      .then(
+        (result) => {
+          setEmailSend("Votre message à bien été envoyé.");
+          setInputsValues({
+            name: "",
+            email: "",
+            purpose: "",
+            msg: "",
+          });
+        },
+        (error) => {
+          setErrorMsg(
+            "Une erreur est surevenue lors de l'envoie de votre message. Veuillez réessayé ultérierement."
+          );
+        }
+      );
   };
 
   /* error handling */
@@ -115,9 +130,10 @@ function Contact() {
   });
 
   useEffect(() => {
-    if (!errorMsg) return;
+    if (!errorMsg && !emailSend) return;
     setTimeout(() => {
       setErrorMsg(false);
+      setEmailSend(false);
       setErrorInputAnim({
         name: false,
         email: false,
@@ -125,14 +141,22 @@ function Contact() {
         msg: false,
       });
     }, 3000);
-  }, [errorMsg]);
+  }, [errorMsg, emailSend]);
 
   return (
-    <main className="contact__body  outlet__body">
-      <h1>FORMULAIRE DE CONTACT</h1>
-      <div className={`contact__text__wrapper ${errorMsg ? "error" : null}`}>
+    <main className="contact__body  outlet__body flexColCC">
+      <h1 className="page__title outlet__box goldenBorder">
+        FORMULAIRE DE CONTACT
+      </h1>
+      <div
+        className={`contact__text__wrapper outlet__box goldenBorder flexColCC ${
+          errorMsg ? "error" : emailSend ? "emailSend" : null
+        }`}
+      >
         {errorMsg ? (
           <p>{errorMsg}</p>
+        ) : emailSend ? (
+          <p>{emailSend}</p>
         ) : (
           <>
             <p>Vous pouvez me contacter depuis ce formulaire.</p>
@@ -140,9 +164,12 @@ function Contact() {
           </>
         )}
       </div>
-      <section className="contact__section__wrapper">
-        <form className="contact__form" ref={contactFormRef}>
-          <div className="contact__input__wrapper">
+      <section className="contact__section__wrapper flexColCC">
+        <form
+          className="contact__form outlet__box goldenBorder"
+          ref={contactFormRef}
+        >
+          <div className="contact__input__wrapper flexColSpaceBetween">
             <label
               className={inputsValues["name"] ? "gotValue" : null}
               htmlFor="name"
@@ -243,12 +270,13 @@ function Contact() {
             />
           </div>
         </form>
-        <div className="contact_imgAndButtons__wrapper">
-          <div className="contact__form__img__wrapper">
+        <div className="contact_imgAndButtons__wrapper flexColCC">
+          <div className="contact__form__img__wrapper outlet__box goldenBorder">
             <img src="/images/mario_reading_letter.png" />
           </div>
-          <div className="contact__submit__wrapper">
+          <div className="contact__submit__wrapper flexRowSpaceBetween">
             <button
+              className="simple__button"
               onClick={() =>
                 setInputsValues({
                   name: "",
@@ -258,10 +286,12 @@ function Contact() {
                 })
               }
             >
-              Réinitialiser
+              <img src="/icons/reset.png" />
             </button>
-            <button className="contact__submit__falseButton" />
-            <button onClick={submitHandler}>Confirmer</button>
+
+            <button className="simple__button" onClick={submitHandler}>
+              <img src="/icons/check.png" />
+            </button>
           </div>
         </div>
       </section>
