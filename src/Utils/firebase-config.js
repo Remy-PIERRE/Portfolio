@@ -21,9 +21,9 @@ export const db = getFirestore(app);
 // key is the counterpart to the secret key you set in the Firebase console.
 // self.FIREBASE_APPCHECK_DEBUG_TOKEN = true;
 const appCheck = initializeAppCheck(app, {
-  provider: new ReCaptchaV3Provider("6LeltTImAAAAALIrCaAO0vVln-1wDoR8W112-Slx"),
+  provider: new ReCaptchaV3Provider(process.env.REACT_APP_RECAPTCHA_KEY),
 
   // Optional argument. If true, the SDK automatically refreshes App Check
   // tokens as needed.
-  isTokenAutoRefreshEnabled: true,
+  // isTokenAutoRefreshEnabled: true,
 });
