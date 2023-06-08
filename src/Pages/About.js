@@ -79,7 +79,11 @@ function About() {
           <div className="about__section__img__wrapper flexRowCC">
             <div className="outlet__box goldenBorder about__box">
               <img
-                src={selectedSection === 0 ? "/images/portrait-rem.webp" : null}
+                src={
+                  selectedSection === 0
+                    ? "/images/portrait-rem.webp"
+                    : "/images/portrait-rem.webp"
+                }
                 style={{
                   animation:
                     aboutInAnimation == "out"
